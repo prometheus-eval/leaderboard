@@ -6,48 +6,26 @@ BGB_LOGO = '<img src="https://raw.githubusercontent.com/prometheus-eval/leaderbo
 BGB_TITLE = """<h1 align="center">BiGGen-Bench Leaderboard</h1>"""
 
 
-
 ABOUT = """
 ## 📝 About
-The 🤗 LLM-Perf Leaderboard 🏋️ is a laderboard at the intersection of quality and performance.
-Its aim is to benchmark the performance (latency, throughput, memory & energy) 
-of Large Language Models (LLMs) with different hardwares, backends and optimizations 
-using [Optimum-Benhcmark](https://github.com/huggingface/optimum-benchmark).
+### BiGGen-Bench Leaderboard
 
-Anyone from the community can request a new base model or hardware/backend/optimization 
-configuration for automated benchmarking:
+Welcome to the 🌟 BiGGen-Bench Leaderboard 🚀, a dedicated benchmarking platform designed to evaluate the nuanced capabilities of Generative Language Models (GLMs) across a variety of complex and diverse tasks. Leveraging the refined methodologies of [BiGGen-Bench](https://github.com/prometheus-eval/prometheus-eval), our leaderboard offers a comprehensive assessment framework that mirrors human-like discernment and precision in evaluating language models.
 
-- Model evaluation requests should be made in the 
-[🤗 Open LLM Leaderboard 🏅](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard) ;
-we scrape the [list of canonical base models](https://github.com/huggingface/optimum-benchmark/blob/main/llm_perf/utils.py) from there.
-- Hardware/Backend/Optimization configuration requests should be made in the 
-[🤗 LLM-Perf Leaderboard 🏋️](https://huggingface.co/spaces/optimum/llm-perf-leaderboard) or 
-[Optimum-Benhcmark](https://github.com/huggingface/optimum-benchmark) repository (where the code is hosted).
+#### Evaluation Details
 
-## ✍️ Details
+- **Evaluation Scope**: Covers nine key capabilities of GLMs across 77 tasks, with 765 unique instances tailored to test specific aspects of model performance.
+- **Scoring System**: Utilizes a detailed scoring rubric from 1 to 5, reflecting a range of outcomes based on instance-specific criteria closely aligned with the nuanced requirements of each task.
+- **Hardware and Setup**: Benchmarks are conducted using a controlled setup to ensure consistent and fair comparison across different models.
+- **Transparency and Openness**: All codes, data, and detailed evaluation results are publicly available to foster transparency and enable community-driven enhancements and verifications.
 
-- To avoid communication-dependent results, only one GPU is used.
-- Score is the average evaluation score obtained from the [🤗 Open LLM Leaderboard](https://huggingface.co/spaces/HuggingFaceH4/open_llm_leaderboard)
-- LLMs are running on a singleton batch with a prompt size of 256 and generating a 64 tokens for at least 10 iterations and 10 seconds.
-- Energy consumption is measured in kWh using CodeCarbon and taking into consideration the GPU, CPU, RAM and location of the machine.
-- We measure three types of memory: Max Allocated Memory, Max Reserved Memory and Max Used Memory. The first two being reported by PyTorch and the last one being observed using PyNVML.
+#### Benchmarking Script
 
-All of our benchmarks are ran by this single script
-[benchmark_cuda_pytorch.py](https://github.com/huggingface/optimum-benchmark/blob/llm-perf/llm-perf/benchmark_cuda_pytorch.py)
-using the power of [Optimum-Benhcmark](https://github.com/huggingface/optimum-benchmark) to garantee reproducibility and consistency.
+All benchmarks are executed using the provided [code](https://github.com/prometheus-eval/prometheus-eval/blob/main/BiGGen-Bench) within the BiGGen-Bench repository. This script ensures that all models are evaluated under identical conditions, guaranteeing reliability and reproducibility of results.
+
 """
 
 
 CITATION_BUTTON_LABEL = "Copy the following snippet to cite these results."
-CITATION_BUTTON = r"""@misc{llm-perf-leaderboard,
-  author = {Ilyas Moutawwakil, Régis Pierrard},
-  title = {LLM-Perf Leaderboard},
-  year = {2023},
-  publisher = {Hugging Face},
-  howpublished = "\url{https://huggingface.co/spaces/optimum/llm-perf-leaderboard}",
-@software{optimum-benchmark,
-  author = {Ilyas Moutawwakil, Régis Pierrard},
-  publisher = {Hugging Face},
-  title = {Optimum-Benchmark: A framework for benchmarking the performance of Transformers models with different hardwares, backends and optimizations.},
-}
+CITATION_BUTTON = r"""TBA
 """

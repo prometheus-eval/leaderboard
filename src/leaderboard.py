@@ -1,6 +1,6 @@
 import gradio as gr
-from src.utils import model_hyperlink, process_score
 
+from src.utils import model_hyperlink, process_score
 
 LEADERBOARD_COLUMN_TO_DATATYPE = {
     # open llm
@@ -70,8 +70,6 @@ BGB_COLUMN_MAPPING = {
 
 BGB_COLUMN_TO_DATATYPE = {
     "Model 🤗": "markdown",
-    "Model Params (B)": "number",
-    "Model Type": "str",
     "Average": "number",
     "Grounding ⚡️": "number",
     "Instruction Following 📝": "number",
@@ -82,6 +80,8 @@ BGB_COLUMN_TO_DATATYPE = {
     "Theory of Mind 🤔": "number",
     "Tool Usage 🛠️": "number",
     "Multilingual 🇬🇫": "number",
+    "Model Params (B)": "number",
+    "Model Type": "str",
 }
 
 
@@ -99,7 +99,7 @@ def process_bgb_model(row):
         link = f"https://huggingface.co/{model_name}"
         return model_hyperlink(link, model_name)
     elif model_type == "Proprietary":
-        
+
         api_model_2_link = {
             "gpt-3.5-turbo-1106": "https://platform.openai.com/docs/models/gpt-3-5",
             "gpt-3.5-turbo-0125": "https://platform.openai.com/docs/models/gpt-3-5",
@@ -116,10 +116,10 @@ def process_bgb_model(row):
             "gemini-pro-1.5": "https://deepmind.google/technologies/gemini/pro/",
             "google/gemini-flash-1.5": "https://deepmind.google/technologies/gemini/flash/",
         }
-        
+
         link = api_model_2_link[model_name]
         return model_hyperlink(link, model_name)
-        
+
     else:
         raise NotImplementedError(f"Model type {model_type} not implemented")
 
@@ -174,7 +174,7 @@ def create_leaderboard_table(llm_perf_df):
 def create_bgb_leaderboard_table(eval_df):
     # get dataframe
     bgb_leaderboard_df = get_bgb_leaderboard_df(eval_df)
-    
+
     # create search bar
     with gr.Row():
         search_bar = gr.Textbox(
@@ -182,7 +182,21 @@ def create_bgb_leaderboard_table(eval_df):
             info="🔍 Search for a model name",
             elem_id="search-bar",
         )
-    
+
+    with gr.Row():
+        type_checkboxes = gr.CheckboxGroup(
+            label="Model Type",
+            value=["Base", "Chat", "Proprietary"],
+            choices=["Base", "Chat", "Proprietary"],
+            info="☑️ Select the capabilities to display",
+            elem_id="type-checkboxes",
+        )
+
+    with gr.Row():
+        param_slider = gr.Slider(
+            minimum=0, maximum=150, value=7, step=1, interactive=True, label="Model Params (B)", elem_id="param-slider"
+        )
+
     # create checkboxes
     with gr.Row():
         columns_checkboxes = gr.CheckboxGroup(
@@ -192,7 +206,7 @@ def create_bgb_leaderboard_table(eval_df):
             info="☑️ Select the capabilities to display",
             elem_id="columns-checkboxes",
         )
-    
+
     # create table
     bgb_leaderboard_table = gr.components.Dataframe(
         value=bgb_leaderboard_df[list(BGB_COLUMN_MAPPING.values())],
@@ -201,4 +215,4 @@ def create_bgb_leaderboard_table(eval_df):
         elem_id="leaderboard-table",
     )
 
-    return search_bar, columns_checkboxes, bgb_leaderboard_table
+    return search_bar, columns_checkboxes, type_checkboxes, param_slider, bgb_leaderboard_table

@@ -1,10 +1,10 @@
 import os
+from pathlib import Path
 
 import pandas as pd
-from pathlib import Path
-from src.utils import process_kernels, process_quantizations
-from src.model_list import get_all_model_list, MODEL_SHORT_TO_LONG, MODEL_MAPPING
 
+from src.model_list import MODEL_MAPPING, MODEL_SHORT_TO_LONG, get_all_model_list
+from src.utils import process_kernels, process_quantizations
 
 COLUMNS_MAPPING = {
     "config.name": "Experiment 🧪",
@@ -139,16 +139,16 @@ def get_eval_df(eval_model_name: str):
     filepath = base_dir / f"bgb-leaderboard-{eval_model_name}.pkl"
     # For debugging
     csv_filepath = base_dir / f"bgb-leaderboard-{eval_model_name}.csv"
-    
+
     def change_model_name(model_name: str):
-        # TODO: Hard code models with different names        
+        # TODO: Hard code models with different names
         model_name_or_path = MODEL_SHORT_TO_LONG.get(model_name, model_name)
         if model_name == "qwen/qwen-110b-chat":
             model_name_or_path = "Qwen/Qwen1.5-110B-Chat"
-            
+
         if model_name_or_path.endswith("-hjpark"):
             model_name_or_path = model_name_or_path.replace("-hjpark", "")
-        
+
         return model_name_or_path
 
     if os.path.exists(filepath) and False:
@@ -158,11 +158,15 @@ def get_eval_df(eval_model_name: str):
         raw_filepath = base_dir / f"eval_by_{eval_model_name}.csv"
         eval_df = pd.read_csv(raw_filepath)
 
-        eval_df['model_name_or_path'] = eval_df['model_name'].apply(lambda x: change_model_name(x))
-        eval_df.drop(columns=['model_name'], inplace=True)
+        eval_df["model_name_or_path"] = eval_df["model_name"].apply(lambda x: change_model_name(x))
+        eval_df.drop(columns=["model_name"], inplace=True)
 
-        eval_df['model_params'] = eval_df['model_name_or_path'].apply(lambda x: MODEL_MAPPING.get(x, ['Unknown', 'Unknown'])[0])
-        eval_df['model_type'] = eval_df['model_name_or_path'].apply(lambda x: MODEL_MAPPING.get(x, ['Unknown', 'Unknown'])[1])
+        eval_df["model_params"] = eval_df["model_name_or_path"].apply(
+            lambda x: MODEL_MAPPING.get(x, ["Unknown", "Unknown"])[0]
+        )
+        eval_df["model_type"] = eval_df["model_name_or_path"].apply(
+            lambda x: MODEL_MAPPING.get(x, ["Unknown", "Unknown"])[1]
+        )
 
         capabilities = [
             "grounding",
@@ -175,9 +179,9 @@ def get_eval_df(eval_model_name: str):
             "tool_usage",
             "multilingual",
         ]
-        
+
         # Make the average of the capabilities
-        eval_df['average'] = eval_df[capabilities].mean(axis=1)
+        eval_df["average"] = eval_df[capabilities].mean(axis=1)
 
         # Round to 3 decimal places for capabilities and average
         eval_df = eval_df.round(
@@ -197,7 +201,7 @@ def get_eval_df(eval_model_name: str):
 
         # print(eval_df[eval_df['model_params'] == 'Unknown'])
         eval_df.rename(columns=BGB_COLUMNS_MAPPING, inplace=True)
-        
+
         eval_df.sort_values(
             by=BGB_SORTING_COLUMNS,
             ascending=False,
@@ -209,6 +213,7 @@ def get_eval_df(eval_model_name: str):
     # import pdb; pdb.set_trace()
 
     return eval_df
+
 
 if __name__ == "__main__":
     get_eval_df("gpt-4-turbo-2024-04-09")

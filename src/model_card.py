@@ -131,27 +131,28 @@ def get_model_tags(model_card, model: str):
 
 def test():
     model = "meta-llama/Meta-Llama-3-8B-Instruct"
-    
+
     # Test check_model_card
     status, error, card = check_model_card(model)
-    
+
     # Test is_model_on_hub
     status2, error2, config2 = is_model_on_hub(model, "main")
     assert status == True
     print(status2, error2, config2)
-    
+
     # Test get_model_size
     model_info = ModelInfo(id=model)
     precision = "GPTQ"
     model_size = get_model_size(model_info, precision)
     print(model_size)
-    
-    import pdb; pdb.set_trace()
-    
+
+    import pdb
+
+    pdb.set_trace()
+
     # Test get_model_arch
     # model_arch = get_model_arch(model_info)
-    
-        
+
     pass
 
 

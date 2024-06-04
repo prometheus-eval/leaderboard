@@ -12,8 +12,8 @@ Grounding ⚡️,Instruction Following 📝,Planning 📅,Reasoning 💡,Refinem
 3.875,3.88,3.871,3.83,3.5,4.145,4.01,3.288,3.1,gemini-pro-1.5,Proprietary,Proprietary,3.722
 3.9,3.83,3.757,3.66,3.638,3.957,3.94,3.712,2.871,mistral-large,Proprietary,Proprietary,3.696
 4.05,3.81,3.743,3.81,3.31,4.145,3.97,3.45,2.729,google/gemini-flash-1.5,Proprietary,Proprietary,3.669
-3.925,4.02,3.857,3.46,3.517,3.928,3.91,3.425,2.829,alpindale/c4ai-command-r-plus-GPTQ,104.0,Chat,3.652
-3.812,3.96,3.771,3.6,3.379,4.043,3.84,3.45,2.757,MaziyarPanahi/Mixtral-8x22B-Instruct-v0.1-AWQ,141.0,Chat,3.624
+3.925,4.02,3.857,3.46,3.517,3.928,3.91,3.425,2.829,alpindale/c4ai-command-r-plus-GPTQ,GPTQ,Chat,3.652
+3.812,3.96,3.771,3.6,3.379,4.043,3.84,3.45,2.757,MaziyarPanahi/Mixtral-8x22B-Instruct-v0.1-AWQ,AWQ,Chat,3.624
 3.712,3.92,3.771,3.53,3.586,4.101,3.92,3.425,2.629,Qwen/Qwen1.5-72B-Chat,72.0,Chat,3.622
 3.85,3.75,3.814,3.3,3.345,3.928,3.71,3.362,3.043,meta-llama/Meta-Llama-3-8B-Instruct,8.0,Chat,3.567
 3.775,3.86,3.8,3.44,3.534,3.986,3.91,3.325,2.429,Starling-LM-7B-beta,7.0,Chat,3.562
@@ -26,7 +26,7 @@ Grounding ⚡️,Instruction Following 📝,Planning 📅,Reasoning 💡,Refinem
 3.638,3.8,3.8,3.17,3.155,3.826,3.7,3.5,2.4,allenai/tulu-2-dpo-70b,70.0,Chat,3.443
 3.7,3.8,3.586,3.21,3.034,3.826,3.7,3.488,2.586,upstage/SOLAR-10.7B-Instruct-v1.0,10.7,Chat,3.437
 3.662,3.84,3.671,3.24,3.155,3.783,3.71,3.338,2.529,NousResearch/Nous-Hermes-2-Mixtral-8x7B-DPO,46.7,Chat,3.436
-3.525,3.59,3.5,3.44,3.207,3.942,3.37,2.762,,mistral-community/Mixtral-8x22B-v0.1-AWQ,141.0,Base,3.417
+3.525,3.59,3.5,3.44,3.207,3.942,3.37,2.762,,mistral-community/Mixtral-8x22B-v0.1-AWQ,AWQ,Base,3.417
 3.612,3.72,3.657,2.98,3.155,4.464,3.79,2.888,2.429,meta-llama/Llama-2-70b-chat-hf,70.0,Chat,3.411
 3.462,3.74,3.714,3.27,3.414,4.087,3.81,2.812,2.014,01-ai/Yi-34B-Chat,34.0,Chat,3.369
 3.588,3.77,3.614,3.26,3.121,3.884,3.5,3.062,2.486,Qwen/Qwen1.5-14B-Chat,14.0,Chat,3.365
@@ -35,7 +35,7 @@ Grounding ⚡️,Instruction Following 📝,Planning 📅,Reasoning 💡,Refinem
 3.688,3.69,3.629,3.16,3.103,3.652,3.59,3.225,2.414,NousResearch/Nous-Hermes-2-Mixtral-8x7B-SFT,46.7,Chat,3.35
 3.588,3.66,3.471,3.66,3.345,3.942,3.7,2.912,1.814,microsoft/Phi-3-mini-128k-instruct,3.8,Chat,3.344
 3.525,3.76,3.514,3.26,3.31,3.841,3.61,2.888,2.314,openchat/openchat-3.5-0106,7.0,Chat,3.336
-3.288,3.62,3.686,3.25,3.345,3.551,3.45,3.062,2.543,MaziyarPanahi/zephyr-orpo-141b-A35b-v0.1-AWQ,141.0,Chat,3.31
+3.288,3.62,3.686,3.25,3.345,3.551,3.45,3.062,2.543,MaziyarPanahi/zephyr-orpo-141b-A35b-v0.1-AWQ,AWQ,Chat,3.31
 3.712,3.74,3.5,3.2,2.948,3.942,3.53,2.838,2.129,Starling-LM-7B-alpha,7.0,Chat,3.282
 3.4,3.74,3.4,3.04,3.0,3.754,3.71,2.975,2.043,Qwen/Qwen1.5-7B-Chat,7.0,Chat,3.229
 3.588,3.7,3.343,2.71,2.862,4.319,3.66,2.512,2.343,meta-llama/Llama-2-13b-chat-hf,13.0,Chat,3.226

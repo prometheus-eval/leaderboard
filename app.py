@@ -1,15 +1,18 @@
 import gradio as gr
+from gradio_leaderboard import ColumnFilter, Leaderboard, SelectColumns
 
 from src.assets import custom_css
-
-from src.content import ABOUT, CITATION_BUTTON, CITATION_BUTTON_LABEL, LOGO, TITLE, BGB_LOGO, BGB_TITLE
-from src.leaderboard import create_leaderboard_table, create_bgb_leaderboard_table, BGB_COLUMN_MAPPING
-from src.llm_perf import get_llm_perf_df, get_eval_df
-from src.panel import (
-    create_select_callback,
+from src.content import ABOUT, BGB_LOGO, BGB_TITLE, CITATION_BUTTON, CITATION_BUTTON_LABEL, LOGO, TITLE
+from src.leaderboard import (
+    BGB_COLUMN_MAPPING,
+    BGB_COLUMN_TO_DATATYPE,
+    CAPABILITY_COLUMNS,
+    create_bgb_leaderboard_table,
+    create_leaderboard_table,
+    get_bgb_leaderboard_df,
 )
-
-
+from src.llm_perf import get_eval_df, get_llm_perf_df
+from src.panel import create_select_callback
 
 BGB = True
 
@@ -38,35 +41,102 @@ with demo:
     gr.HTML(BGB_LOGO, elem_classes="logo")
     gr.HTML(BGB_TITLE, elem_classes="title")
     # gr.HTML(BGB_LOGO_AND_TITLE, elem_classes="title")
-    
+
     with gr.Tabs(elem_classes="tabs"):
-        
+
         for idx, eval_model in enumerate(EVAL_MODELS):
             tab_name = EVAL_MODEL_TABS[eval_model]
-        
-            machine = eval_model
-            machine_textbox = gr.Textbox(value=eval_model, visible=False)
 
-            if BGB:
-                eval_df = get_eval_df(eval_model_name=eval_model)
-            else:
-                eval_df = get_llm_perf_df(machine=machine)
-            # Leaderboard
+            # Previous code without gradio_leaderboard
+
+            # machine = eval_model
+            # machine_textbox = gr.Textbox(value=eval_model, visible=False)
+
+            # if BGB:
+            #     eval_df = get_eval_df(eval_model_name=eval_model)
+            # else:
+            #     eval_df = get_llm_perf_df(machine=machine)
+            # # Leaderboard
+            # with gr.TabItem(tab_name, id=idx):
+            #     if BGB:
+            #         search_bar, columns_checkboxes, type_checkboxes, param_slider, leaderboard_table = create_bgb_leaderboard_table(eval_df)
+            #     else:
+            #         search_bar, columns_checkboxes, type_checkboxes, param_slider, leaderboard_table = (
+            #             create_leaderboard_table(eval_df)
+            #         )
+
+            # create_select_callback(
+            #     # inputs
+            #     machine_textbox,
+            #     # interactive
+            #     columns_checkboxes,
+            #     search_bar,
+            #     type_checkboxes,
+            #     param_slider,
+            #     # outputs
+            #     leaderboard_table,
+            # )
             with gr.TabItem(tab_name, id=idx):
-                if BGB:
-                    search_bar, columns_checkboxes, leaderboard_table = create_bgb_leaderboard_table(eval_df)
-                else:
-                    search_bar, columns_checkboxes, leaderboard_table = create_leaderboard_table(eval_df)
 
-            create_select_callback(
-                # inputs
-                machine_textbox,
-                # interactive
-                columns_checkboxes,
-                search_bar,
-                # outputs
-                leaderboard_table,
-            )
+                eval_df = get_eval_df(eval_model_name=eval_model)
+                eval_df = get_bgb_leaderboard_df(eval_df)
+
+                ordered_columns = [
+                    "Model 🤗",
+                    "Average",
+                    "Grounding ⚡️",
+                    "Instruction Following 📝",
+                    "Planning 📅",
+                    "Reasoning 💡",
+                    "Refinement 🔩",
+                    "Safety ⚠️",
+                    "Theory of Mind 🤔",
+                    "Tool Usage 🛠️",
+                    "Multilingual 🇬🇫",
+                    "Model Type",
+                    "Model Params (B)",
+                ]
+
+                ordered_columns_types = [
+                    "markdown",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "number",
+                    "text",
+                    "number",
+                ]
+
+                eval_df = eval_df[ordered_columns]
+
+                Leaderboard(
+                    value=eval_df,
+                    datatype=ordered_columns_types,
+                    select_columns=SelectColumns(
+                        default_selection=ordered_columns,
+                        cant_deselect=["Model 🤗", "Model Type", "Model Params (B)"],
+                        label="Select Columns to Display:",
+                    ),
+                    search_columns=["Model 🤗"],
+                    # hide_columns=["model_name_for_query", "Model Size"],
+                    filter_columns=[
+                        ColumnFilter("Model Type", type="checkboxgroup", label="Model types"),
+                        ColumnFilter(
+                            "Model Params (B)",
+                            min=0,
+                            max=150,
+                            default=[0, 150],
+                            type="slider",
+                            label="Model Params (B)",
+                        ),
+                    ],
+                )
 
         ####################### ABOUT TAB #######################
         with gr.TabItem("About 📖", id=3):

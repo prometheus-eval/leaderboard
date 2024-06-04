@@ -1,6 +1,5 @@
 from transformers import AutoConfig
 
-
 LLM_MODEL_ARCHS = {
     "stablelm_epoch": "🔴 StableLM-Epoch",
     "stablelm_alpha": "🔴 StableLM-Alpha",
@@ -91,8 +90,9 @@ def test():
     model = "Qwen/Qwen1.5-32B"
     config = AutoConfig.from_pretrained(model, trust_remote_code=True)
 
-    import pdb; pdb.set_trace()
-    
+    import pdb
+
+    pdb.set_trace()
 
 
 if __name__ == "__main__":
