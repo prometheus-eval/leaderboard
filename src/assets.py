@@ -1,4 +1,8 @@
 custom_css = """
+.gradio-container {
+  max-width: 95%!important;
+}
+
 .logo {
     width: 300px;
     height: auto;

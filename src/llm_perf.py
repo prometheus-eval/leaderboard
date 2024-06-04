@@ -162,10 +162,10 @@ def get_eval_df(eval_model_name: str):
         eval_df.drop(columns=["model_name"], inplace=True)
 
         eval_df["model_params"] = eval_df["model_name_or_path"].apply(
-            lambda x: MODEL_MAPPING.get(x, ["Unknown", "Unknown"])[0]
+            lambda x: MODEL_MAPPING.get(x, [None, "Unknown"])[0]
         )
         eval_df["model_type"] = eval_df["model_name_or_path"].apply(
-            lambda x: MODEL_MAPPING.get(x, ["Unknown", "Unknown"])[1]
+            lambda x: MODEL_MAPPING.get(x, [None, "Unknown"])[1]
         )
 
         capabilities = [
@@ -181,7 +181,7 @@ def get_eval_df(eval_model_name: str):
         ]
 
         # Make the average of the capabilities
-        eval_df["average"] = eval_df[capabilities].mean(axis=1)
+        eval_df["average"] = eval_df[capabilities[:-1]].mean(axis=1)
 
         # Round to 3 decimal places for capabilities and average
         eval_df = eval_df.round(

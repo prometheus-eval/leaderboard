@@ -121,7 +121,7 @@ with demo:
                     select_columns=SelectColumns(
                         default_selection=ordered_columns,
                         cant_deselect=["Model 🤗", "Model Type", "Model Params (B)"],
-                        label="Select Columns to Display:",
+                        label="Select Columns to Display\n(Multilingual is excluded when measuring average)",
                     ),
                     search_columns=["Model 🤗"],
                     # hide_columns=["model_name_for_query", "Model Size"],

@@ -1,5 +1,6 @@
 huggingface_hub
-transformers
 gradio
 plotly
 pandas
+transformers
+gradio-leaderboard
