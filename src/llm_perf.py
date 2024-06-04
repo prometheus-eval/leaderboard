@@ -1,8 +1,10 @@
 import os
 
 import pandas as pd
+from pathlib import Path
+from src.utils import process_kernels, process_quantizations
+from src.model_list import get_all_model_list, MODEL_SHORT_TO_LONG, MODEL_MAPPING
 
-from .utils import process_kernels, process_quantizations
 
 COLUMNS_MAPPING = {
     "config.name": "Experiment 🧪",
@@ -28,6 +30,25 @@ COLUMNS_MAPPING = {
 SORTING_COLUMNS = ["Open LLM Score (%)", "Decode (tokens/s)", "Prefill (s)"]
 SUBSETS = ["unquantized", "awq", "bnb", "gptq"]
 SORTING_ASCENDING = [False, True, False]
+
+BGB_SORTING_COLUMNS = ["Average"]
+
+# Use the above capabilities to create the columns
+BGB_COLUMNS_MAPPING = {
+    "model_name_or_path": "Model 🤗",
+    "model_params": "Model Params (B)",
+    "model_type": "Model Type",
+    "average": "Average",
+    "grounding": "Grounding ⚡️",
+    "instruction_following": "Instruction Following 📝",
+    "planning": "Planning 📅",
+    "reasoning": "Reasoning 💡",
+    "refinement": "Refinement 🔩",
+    "safety": "Safety ⚠️",
+    "theory_of_mind": "Theory of Mind 🤔",
+    "tool_usage": "Tool Usage 🛠️",
+    "multilingual": "Multilingual 🇬🇫",
+}
 
 
 def get_raw_llm_perf_df(machine: str = "1xA10"):
@@ -108,3 +129,80 @@ def get_llm_perf_df(machine: str = "1xA10"):
         llm_perf_df.to_csv(f"llm-perf-leaderboard-{machine}.csv", index=False)
 
     return llm_perf_df
+
+
+def get_eval_df(eval_model_name: str):
+
+    assert eval_model_name in ["gpt-4-turbo-2024-04-09", "prometheus-bgb-8x7b-v2.0"]
+
+    base_dir = Path(__file__).parent.parent / "data"
+    filepath = base_dir / f"bgb-leaderboard-{eval_model_name}.pkl"
+    # For debugging
+    csv_filepath = base_dir / f"bgb-leaderboard-{eval_model_name}.csv"
+    
+    def change_model_name(model_name: str):
+        # TODO: Hard code models with different names        
+        model_name_or_path = MODEL_SHORT_TO_LONG.get(model_name, model_name)
+        return model_name_or_path
+
+    if os.path.exists(filepath) and False:
+        eval_df = pd.read_pickle(filepath)
+    else:
+        # Process the df
+        raw_filepath = base_dir / f"eval_by_{eval_model_name}.csv"
+        eval_df = pd.read_csv(raw_filepath)
+
+        eval_df['model_name_or_path'] = eval_df['model_name'].apply(lambda x: change_model_name(x))
+        eval_df.drop(columns=['model_name'], inplace=True)
+
+        eval_df['model_params'] = eval_df['model_name_or_path'].apply(lambda x: MODEL_MAPPING.get(x, ['Unknown', 'Unknown'])[0])
+        eval_df['model_type'] = eval_df['model_name_or_path'].apply(lambda x: MODEL_MAPPING.get(x, ['Unknown', 'Unknown'])[1])
+
+        capabilities = [
+            "grounding",
+            "instruction_following",
+            "planning",
+            "reasoning",
+            "refinement",
+            "safety",
+            "theory_of_mind",
+            "tool_usage",
+            "multilingual",
+        ]
+        
+        # Make the average of the capabilities
+        eval_df['average'] = eval_df[capabilities].mean(axis=1)
+
+        # Round to 3 decimal places for capabilities and average
+        eval_df = eval_df.round(
+            {
+                "average": 3,
+                "grounding": 3,
+                "instruction_following": 3,
+                "planning": 3,
+                "reasoning": 3,
+                "refinement": 3,
+                "safety": 3,
+                "theory_of_mind": 3,
+                "tool_usage": 3,
+                "multilingual": 3,
+            }
+        )
+
+        # print(eval_df[eval_df['model_params'] == 'Unknown'])
+        eval_df.rename(columns=BGB_COLUMNS_MAPPING, inplace=True)
+        
+        eval_df.sort_values(
+            by=BGB_SORTING_COLUMNS,
+            inplace=True,
+        )
+
+        eval_df.to_pickle(str(filepath))
+        eval_df.to_csv(str(csv_filepath), index=False)
+    # import pdb; pdb.set_trace()
+
+    return eval_df
+
+if __name__ == "__main__":
+    get_eval_df("gpt-4-turbo-2024-04-09")
+    get_eval_df("prometheus-bgb-8x7b-v2.0")

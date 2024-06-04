@@ -85,3 +85,15 @@ def process_kernels(x):
         return "AWQ.GEMV"
     else:
         return "No Kernel"
+
+
+def test():
+    model = "Qwen/Qwen1.5-32B"
+    config = AutoConfig.from_pretrained(model, trust_remote_code=True)
+
+    import pdb; pdb.set_trace()
+    
+
+
+if __name__ == "__main__":
+    test()

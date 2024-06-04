@@ -1,6 +1,6 @@
-LOGO = '<img src="https://raw.githubusercontent.com/huggingface/optimum-benchmark/main/logo.png">'
+LOGO = '<img src="https://raw.githubusercontent.com/prometheus-eval/leaderboard/main/logo.png">'
 
-TITLE = """<h1 align="center" id="space-title">🤗 LLM-Perf Leaderboard 🏋️</h1>"""
+TITLE = """<h1 align="center" id="space-title">🤗 BiGGen-Bench Leaderboard 🏋️</h1>"""
 
 ABOUT = """
 ## 📝 About
