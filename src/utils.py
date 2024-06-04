@@ -1,5 +1,6 @@
 from transformers import AutoConfig
 
+
 LLM_MODEL_ARCHS = {
     "stablelm_epoch": "🔴 StableLM-Epoch",
     "stablelm_alpha": "🔴 StableLM-Alpha",
@@ -84,13 +85,3 @@ def process_kernels(x):
         return "AWQ.GEMV"
     else:
         return "No Kernel"
-
-
-# def change_tab(query_param):
-#     query_param = query_param.replace("'", '"')
-#     query_param = json.loads(query_param)
-
-#     if isinstance(query_param, dict) and "tab" in query_param and query_param["tab"] == "plot":
-#         return gr.Tabs.update(selected=1)
-#     else:
-#         return gr.Tabs.update(selected=0)
