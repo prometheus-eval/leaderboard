@@ -143,6 +143,12 @@ def get_eval_df(eval_model_name: str):
     def change_model_name(model_name: str):
         # TODO: Hard code models with different names        
         model_name_or_path = MODEL_SHORT_TO_LONG.get(model_name, model_name)
+        if model_name == "qwen/qwen-110b-chat":
+            model_name_or_path = "Qwen/Qwen1.5-110B-Chat"
+            
+        if model_name_or_path.endswith("-hjpark"):
+            model_name_or_path = model_name_or_path.replace("-hjpark", "")
+        
         return model_name_or_path
 
     if os.path.exists(filepath) and False:
@@ -194,6 +200,7 @@ def get_eval_df(eval_model_name: str):
         
         eval_df.sort_values(
             by=BGB_SORTING_COLUMNS,
+            ascending=False,
             inplace=True,
         )
 

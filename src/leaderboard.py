@@ -1,6 +1,6 @@
 import gradio as gr
-
 from src.utils import model_hyperlink, process_score
+
 
 LEADERBOARD_COLUMN_TO_DATATYPE = {
     # open llm
@@ -26,6 +26,7 @@ LEADERBOARD_COLUMN_TO_DATATYPE = {
     "Params (B)": "number",
 }
 
+
 PRIMARY_COLUMNS = [
     "Model 🤗",
     "Experiment 🧪",
@@ -49,7 +50,8 @@ CAPABILITY_COLUMNS = [
     "Multilingual 🇬🇫",
 ]
 
-BGB_COLUMNS_MAPPING = {
+
+BGB_COLUMN_MAPPING = {
     "model_name_or_path": "Model 🤗",
     "average": "Average",
     "grounding": "Grounding ⚡️",
@@ -65,7 +67,6 @@ BGB_COLUMNS_MAPPING = {
     "model_type": "Model Type",
 }
 
-# Use the values above as keys to create the values
 
 BGB_COLUMN_TO_DATATYPE = {
     "Model 🤗": "markdown",
@@ -83,15 +84,50 @@ BGB_COLUMN_TO_DATATYPE = {
     "Multilingual 🇬🇫": "number",
 }
 
+
 def process_model(model_name):
     link = f"https://huggingface.co/{model_name}"
     return model_hyperlink(link, model_name)
 
 
+# TODO: Process base, chat, proprietary models differently
+def process_bgb_model(row):
+    model_name = row.iloc[0]
+    model_type = row.iloc[1]
+
+    if model_type == "Base" or model_type == "Chat":
+        link = f"https://huggingface.co/{model_name}"
+        return model_hyperlink(link, model_name)
+    elif model_type == "Proprietary":
+        
+        api_model_2_link = {
+            "gpt-3.5-turbo-1106": "https://platform.openai.com/docs/models/gpt-3-5",
+            "gpt-3.5-turbo-0125": "https://platform.openai.com/docs/models/gpt-3-5",
+            "gpt-4-0125-preview": "https://openai.com/blog/new-models-and-developer-products-announced-at-devday",
+            "gpt-4-1106-preview": "https://openai.com/blog/new-models-and-developer-products-announced-at-devday",
+            "gpt-4-turbo-2024-04-09": "https://platform.openai.com/docs/models/gpt-4-turbo-and-gpt-4",
+            "gpt-4o-2024-05-13": "https://openai.com/index/hello-gpt-4o/",
+            "claude-3-haiku-20240307": "https://www.anthropic.com/news/claude-3-family",
+            "claude-3-opus-20240229": "https://www.anthropic.com/news/claude-3-family",
+            "claude-3-sonnet-20240229": "https://www.anthropic.com/news/claude-3-family",
+            "mistral-large": "https://mistral.ai/news/mistral-large/",
+            "mistral-medium": "https://mistral.ai/news/la-plateforme/",
+            "gemini-1.0-pro": "https://deepmind.google/technologies/gemini/pro/",
+            "gemini-pro-1.5": "https://deepmind.google/technologies/gemini/pro/",
+            "google/gemini-flash-1.5": "https://deepmind.google/technologies/gemini/flash/",
+        }
+        
+        link = api_model_2_link[model_name]
+        return model_hyperlink(link, model_name)
+        
+    else:
+        raise NotImplementedError(f"Model type {model_type} not implemented")
+
+
 def get_leaderboard_df(llm_perf_df):
     df = llm_perf_df.copy()
     # transform for leaderboard
-    df["Model 🤗"] = df["Model 🤗"].apply(process_model)
+    df["Model 🤗"] = df["Model 🤗"].apply(process_bgb_model)
     # process quantization for leaderboard
     df["Open LLM Score (%)"] = df.apply(lambda x: process_score(x["Open LLM Score (%)"], x["Quantization 🗜️"]), axis=1)
     return df
@@ -100,7 +136,7 @@ def get_leaderboard_df(llm_perf_df):
 def get_bgb_leaderboard_df(eval_df):
     df = eval_df.copy()
     # transform for leaderboard
-    df["Model 🤗"] = df["Model 🤗"].apply(process_model)
+    df["Model 🤗"] = df[["Model 🤗", "Model Type"]].apply(process_bgb_model, axis=1)
     return df
 
 
@@ -159,9 +195,9 @@ def create_bgb_leaderboard_table(eval_df):
     
     # create table
     bgb_leaderboard_table = gr.components.Dataframe(
-        value=bgb_leaderboard_df[list(BGB_COLUMNS_MAPPING.values())],
+        value=bgb_leaderboard_df[list(BGB_COLUMN_MAPPING.values())],
         datatype=list(BGB_COLUMN_TO_DATATYPE.values()),
-        headers=list(BGB_COLUMNS_MAPPING.keys()),
+        headers=list(BGB_COLUMN_MAPPING.keys()),
         elem_id="leaderboard-table",
     )
 

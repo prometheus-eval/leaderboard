@@ -2,12 +2,13 @@ import gradio as gr
 
 from src.assets import custom_css
 
-from src.content import ABOUT, CITATION_BUTTON, CITATION_BUTTON_LABEL, LOGO, TITLE
-from src.leaderboard import create_leaderboard_table, create_bgb_leaderboard_table
+from src.content import ABOUT, CITATION_BUTTON, CITATION_BUTTON_LABEL, LOGO, TITLE, BGB_LOGO, BGB_TITLE
+from src.leaderboard import create_leaderboard_table, create_bgb_leaderboard_table, BGB_COLUMN_MAPPING
 from src.llm_perf import get_llm_perf_df, get_eval_df
 from src.panel import (
     create_select_callback,
 )
+
 
 
 BGB = True
@@ -26,37 +27,46 @@ EVAL_MODELS = [
     "prometheus-bgb-8x7b-v2.0",
 ]
 
+EVAL_MODEL_TABS = {
+    "gpt-4-turbo-2024-04-09": "GPT-4 as a Judge 🏅",
+    "prometheus-bgb-8x7b-v2.0": "Prometheus as a Judge 🏅",
+}
+
 
 demo = gr.Blocks(css=custom_css)
 with demo:
-    gr.HTML(LOGO, elem_classes="logo")
-    gr.HTML(TITLE, elem_classes="title")
-
+    gr.HTML(BGB_LOGO, elem_classes="logo")
+    gr.HTML(BGB_TITLE, elem_classes="title")
+    # gr.HTML(BGB_LOGO_AND_TITLE, elem_classes="title")
+    
     with gr.Tabs(elem_classes="tabs"):
-        hardware = "Leaderboard 🏅"
-        machine = "1xA10"
-        machine_textbox = gr.Textbox(value=machine, visible=False)
+        
+        for idx, eval_model in enumerate(EVAL_MODELS):
+            tab_name = EVAL_MODEL_TABS[eval_model]
+        
+            machine = eval_model
+            machine_textbox = gr.Textbox(value=eval_model, visible=False)
 
-        if BGB:
-            eval_df = get_eval_df("gpt-4-turbo-2024-04-09")
-        else:
-            eval_df = get_llm_perf_df(machine=machine)
-        # Leaderboard
-        with gr.TabItem("Leaderboard 🏅", id=0):
             if BGB:
-                search_bar, columns_checkboxes, leaderboard_table = create_bgb_leaderboard_table(eval_df)
+                eval_df = get_eval_df(eval_model_name=eval_model)
             else:
-                search_bar, columns_checkboxes, leaderboard_table = create_leaderboard_table(eval_df)
+                eval_df = get_llm_perf_df(machine=machine)
+            # Leaderboard
+            with gr.TabItem(tab_name, id=idx):
+                if BGB:
+                    search_bar, columns_checkboxes, leaderboard_table = create_bgb_leaderboard_table(eval_df)
+                else:
+                    search_bar, columns_checkboxes, leaderboard_table = create_leaderboard_table(eval_df)
 
-        create_select_callback(
-            # inputs
-            machine_textbox,
-            # interactive
-            columns_checkboxes,
-            search_bar,
-            # outputs
-            leaderboard_table,
-        )
+            create_select_callback(
+                # inputs
+                machine_textbox,
+                # interactive
+                columns_checkboxes,
+                search_bar,
+                # outputs
+                leaderboard_table,
+            )
 
         ####################### ABOUT TAB #######################
         with gr.TabItem("About 📖", id=3):

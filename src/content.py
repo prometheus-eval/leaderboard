@@ -2,6 +2,11 @@ LOGO = '<img src="https://raw.githubusercontent.com/prometheus-eval/leaderboard/
 
 TITLE = """<h1 align="center" id="space-title">🤗 BiGGen-Bench Leaderboard 🏋️</h1>"""
 
+BGB_LOGO = '<img src="https://raw.githubusercontent.com/prometheus-eval/leaderboard/main/logo.png" alt="Logo" style="width: 30%; display: block; margin: auto;">'
+BGB_TITLE = """<h1 align="center">BiGGen-Bench Leaderboard</h1>"""
+
+
+
 ABOUT = """
 ## 📝 About
 The 🤗 LLM-Perf Leaderboard 🏋️ is a laderboard at the intersection of quality and performance.
